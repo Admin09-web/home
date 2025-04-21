@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Formulario</title>
+    <meta charset="UTF-8">
+    <title>Formulario de Contacto</title>
 </head>
 <body>
-  <h2>Formulario de contacto</h2>
-  <form action="https://hook.us2.make.com/1d60iajvhx2sh1ysruqx42ipuad5qczf" method="post">
-    <label>Nombre:
-      <input type="text" name="nombre" required>
-    </label><br>
-    <label>Email:
-      <input type="email" name="email" required>
-    </label><br>
-    <label>Mensaje:
-      <input type="text" name="mensaje" required>
-    </label><br>
-    <button type="submit">Enviar</button>
-  </form>
+    <h2>Formulario de Contacto</h2>
+    <form action="https://hook.us2.make.com/TU_WEBHOOK_DE_MAKE" method="post">
+        <label for="nombre">Nombre:</label><br>
+        <input type="text" id="nombre" name="nombre" required><br><br>
+
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="mensaje">Mensaje:</label><br>
+        <textarea id="mensaje" name="mensaje" rows="4" required></textarea><br><br>
+
+        <button type="submit">Enviar Mensaje</button>
+    </form>
 </body>
 </html>
