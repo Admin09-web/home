@@ -115,7 +115,6 @@
     <textarea id="ubicacionPruebas" name="ubicacionPruebas" rows="5" maxlength="2000"></textarea>
   </fieldset>
 
-
   <button type="submit">Enviar</button>
 </form>
 
@@ -135,8 +134,6 @@
         ${index > 1 ? `<button type="button" class="remove-button" onclick="eliminarSeccion('${tipo}-${index}')">❌</button>` : ''}
         <label>Nombre:</label>
         <input type="text" name="${tipo}_nombre_${index}" required>
-        <label>Ciudad de domicilio:</label>
-        <input type="text" name="${tipo}_ciudad_${index}" required>
         <label>Tipo de documento:</label>
         <select name="${tipo}_documento_${index}" required>
           <option value="CC">CC</option>
@@ -149,8 +146,6 @@
         <input type="number" name="${tipo}_numero_${index}" required>
         <label>Dirección notificaciones:</label>
         <input type="text" name="${tipo}_direccion_${index}" required>
-        <label>Ciudad de domicilio:</label>
-        <input type="text" name="${tipo}_ciudad2_${index}" required>
         <label>Celular:</label>
         <input type="number" name="${tipo}_celular_${index}" required>
         <label>Correo Electrónico:</label>
@@ -191,33 +186,20 @@
     document.getElementById('obligaciones').appendChild(div);
   }
 
-  // Funciones para mostrar los textos de manifiestos
   function mostrarTextoPagoAdeudada() {
     const pagoAdeudada = document.getElementById('pagoAdeudada').value;
-    const texto = document.getElementById('textoPagoAdeudada');
-    if (pagoAdeudada === 'si') {
-      texto.style.display = 'block';
-    } else {
-      texto.style.display = 'none';
-    }
+    document.getElementById('textoPagoAdeudada').style.display = pagoAdeudada === 'si' ? 'block' : 'none';
   }
 
   function mostrarTextoSoportes() {
     const soportes = document.getElementById('soportesDocumentales').value;
-    const texto = document.getElementById('textoSoportes');
-    if (soportes === 'si') {
-      texto.style.display = 'block';
-    } else {
-      texto.style.display = 'none';
-    }
+    document.getElementById('textoSoportes').style.display = soportes === 'si' ? 'block' : 'none';
   }
 
   document.getElementById('miFormulario').addEventListener('submit', async function(e) {
     e.preventDefault();
 
     const formData = new FormData(this);
-    calcularIntereses(formData);
-
     const data = {};
     for (let [key, value] of formData.entries()) {
       data[key] = value;
@@ -247,16 +229,6 @@
       console.error("Error al enviar:", err);
       document.getElementById('respuesta').innerText = "Error al enviar el formulario.";
     }
-  });
-
-  // Cargar los valores por defecto
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('demandantes').innerHTML = crearCampos('demandante', 1);
-    document.getElementById('demandados').innerHTML = crearCampos('demandado', 1);
-    document.getElementById('apoderados').innerHTML = crearCampos('apoderado', 1);
-    agregarObligacion(); // uno por defecto
-    mostrarTextoPagoAdeudada(); // Mostrar texto según selección
-    mostrarTextoSoportes(); // Mostrar texto según selección
   });
 </script>
 
