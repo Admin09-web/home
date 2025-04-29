@@ -1,63 +1,264 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Formulario de Contacto</title>
+  <meta charset="UTF-8">
+  <title>Formulario de Proceso</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 900px; margin: auto; }
+    fieldset { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 8px; }
+    legend { font-weight: bold; padding: 0 10px; }
+    label { display: block; margin-top: 10px; font-weight: bold; }
+    input, select, textarea { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; }
+    .remove-button {
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      margin-top: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+      float: right;
+    }
+    .add-button {
+      margin-top: 10px;
+      background-color: #2e86de;
+      color: white;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .obligacion-calculo { margin-top: 15px; }
+    .manifiesto-texto, .prueba-texto { margin-top: 10px; font-style: italic; }
+  </style>
 </head>
 <body>
-    <h2>Formulario de Contacto</h2>
-    <form action="https://hook.us2.make.com/1d60iajvhx2sh1ysruqx42ipuad5qczf" method="post">
-        <label for="nombre">Nombre:</label><br>
-        <input type="text" id="nombre" name="nombre" required><br><br>
 
-        <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email" required><br><br>
+<h2>Formulario de Proceso</h2>
+<form id="miFormulario">
 
-        <label for="mensaje">Mensaje:</label><br>
-        <textarea id="mensaje" name="mensaje" rows="4" required></textarea><br><br>
+  <!-- Demandante -->
+  <fieldset>
+    <legend>Demandante</legend>
+    <div id="demandantes"></div>
+    <button type="button" class="add-button" onclick="agregarSeccion('demandantes', 'demandante')">+ Agregar Demandante</button>
+  </fieldset>
 
-        <button type="submit">Enviar Mensaje</button>
-    </form>
+  <!-- Demandado -->
+  <fieldset>
+    <legend>Demandado</legend>
+    <div id="demandados"></div>
+    <button type="button" class="add-button" onclick="agregarSeccion('demandados', 'demandado')">+ Agregar Demandado</button>
+  </fieldset>
 
-    <script>
-    const form = document.getElementById('miFormulario');
-    form.addEventListener('submit', async function(e) {
-      e.preventDefault();
+  <!-- Apoderado -->
+  <fieldset>
+    <legend>Apoderado</legend>
+    <div id="apoderados"></div>
+    <button type="button" class="add-button" onclick="agregarSeccion('apoderados', 'apoderado')">+ Agregar Apoderado</button>
+  </fieldset>
 
-      const data = {
-        nombre: form.nombre.value,
-        email: form.email.value,
-        mensaje: form.mensaje.value
-      };
+  <!-- Hechos -->
+  <fieldset>
+    <legend>Hechos</legend>
+    <label for="tipoHecho">Tipo de Hecho:</label>
+    <select id="tipoHecho" name="tipoHecho" required>
+      <option value="">Seleccione...</option>
+      <option value="verbal">Verbal</option>
+      <option value="escrito">Escrito</option>
+    </select>
 
-      try {
-        const response = await fetch('https://script.google.com/macros/s/AKfycbzZ_qE0xcv6Mw_73VT7zA6V6qnuxPnA420IVb0ANTt8cuIUoU6WyeJ9roZvLUpt-oyR/exec', {
-          method: 'POST',
-          body: JSON.stringify(data),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
+    <label for="descripcionHecho">Precise en forma breve y concreta cuál fue el contrato que originó la deuda - (máximo 2000 caracteres)</label>
+    <textarea id="descripcionHecho" name="descripcionHecho" rows="5" maxlength="2000" required></textarea>
+  </fieldset>
 
-        const result = await response.json();
-        console.log(result);
+  <!-- Obligaciones -->
+  <fieldset>
+    <legend>Obligaciones</legend>
+    <div id="obligaciones"></div>
+    <button type="button" class="add-button" onclick="agregarObligacion()">+ Agregar Obligación</button>
+  </fieldset>
 
-        document.getElementById('respuesta').innerText = result.message || "Formulario enviado correctamente.";
+  <!-- Manifiestos -->
+  <fieldset>
+    <legend>Manifiestos</legend>
+    <label for="pagoAdeudada">Pago suma adeudada:</label>
+    <select id="pagoAdeudada" name="pagoAdeudada" onchange="mostrarTextoPagoAdeudada()" required>
+      <option value="">Seleccione...</option>
+      <option value="si">Sí</option>
+      <option value="no">No</option>
+    </select>
 
-        if (result.pdfUrl) {
-          const link = document.createElement('a');
-          link.href = result.pdfUrl;
-          link.innerText = "Ver PDF";
-          link.target = "_blank";
-          document.getElementById('respuesta').appendChild(document.createElement("br"));
-          document.getElementById('respuesta').appendChild(link);
-        }
+    <div id="textoPagoAdeudada" class="manifiesto-texto" style="display:none;">
+      <p>En caso de que el cumplimiento dependa de una contraprestación a su cargo, acredite cómo la cumplió (aporte pruebas en el numeral 6).</p>
+    </div>
 
-      } catch (err) {
-        console.error("Error al enviar:", err);
-        document.getElementById('respuesta').innerText = "Hubo un error al enviar el formulario.";
+    <label for="soportesDocumentales">Soportes documentales:</label>
+    <select id="soportesDocumentales" name="soportesDocumentales" onchange="mostrarTextoSoportes()" required>
+      <option value="">Seleccione...</option>
+      <option value="si">Sí</option>
+      <option value="no">No</option>
+    </select>
+
+    <div id="textoSoportes" class="manifiesto-texto" style="display:none;">
+      <p>En caso de tenerlas en su poder, relacionarlas y aportarlas como pruebas en el numeral 6 o señalar en dónde están.</p>
+    </div>
+  </fieldset>
+
+  <!-- Pruebas -->
+  <fieldset>
+    <legend>Pruebas</legend>
+    <label for="documentosPruebas">Adjunte y precise en forma concreta cuál (es) es (son) el (los) documento (s) o prueba (s) que evidencia (n) el cumplimiento de la contraprestación; de la existencia de la (s) deuda (s):</label>
+    <input type="file" id="documentosPruebas" name="documentosPruebas" accept="image/*,application/pdf,.doc,.docx" multiple>
+
+    <label for="ubicacionPruebas">O señale (n) en dónde está (n) la (s) prueba (s) - (máximo 2000 caracteres):</label>
+    <textarea id="ubicacionPruebas" name="ubicacionPruebas" rows="5" maxlength="2000"></textarea>
+  </fieldset>
+
+
+  <button type="submit">Enviar</button>
+</form>
+
+<div id="respuesta" style="margin-top: 20px;"></div>
+
+<script>
+  let contador = {
+    demandante: 1,
+    demandado: 1,
+    apoderado: 1,
+    obligacion: 1
+  };
+
+  function crearCampos(tipo, index) {
+    return `
+      <div class="${tipo}-grupo" id="${tipo}-${index}">
+        ${index > 1 ? `<button type="button" class="remove-button" onclick="eliminarSeccion('${tipo}-${index}')">❌</button>` : ''}
+        <label>Nombre:</label>
+        <input type="text" name="${tipo}_nombre_${index}" required>
+        <label>Ciudad de domicilio:</label>
+        <input type="text" name="${tipo}_ciudad_${index}" required>
+        <label>Tipo de documento:</label>
+        <select name="${tipo}_documento_${index}" required>
+          <option value="CC">CC</option>
+          <option value="NIT">NIT</option>
+          <option value="TI">TI</option>
+          <option value="CE">CE</option>
+          <option value="Pasaporte">Pasaporte</option>
+        </select>
+        <label>Número:</label>
+        <input type="number" name="${tipo}_numero_${index}" required>
+        <label>Dirección notificaciones:</label>
+        <input type="text" name="${tipo}_direccion_${index}" required>
+        <label>Ciudad de domicilio:</label>
+        <input type="text" name="${tipo}_ciudad2_${index}" required>
+        <label>Celular:</label>
+        <input type="number" name="${tipo}_celular_${index}" required>
+        <label>Correo Electrónico:</label>
+        <input type="email" name="${tipo}_correo_${index}" required>
+      </div>
+    `;
+  }
+
+  function agregarSeccion(contenedorId, tipo) {
+    contador[tipo]++;
+    const contenedor = document.getElementById(contenedorId);
+    contenedor.insertAdjacentHTML('beforeend', crearCampos(tipo, contador[tipo]));
+  }
+
+  function eliminarSeccion(id) {
+    const elemento = document.getElementById(id);
+    if (elemento) elemento.remove();
+  }
+
+  function agregarObligacion() {
+    const i = contador.obligacion++;
+    const div = document.createElement('div');
+    div.className = "obligacion-calculo";
+    div.id = `obligacion-${i}`;
+    div.innerHTML = `
+      ${i > 1 ? `<button type="button" class="remove-button" onclick="eliminarSeccion('obligacion-${i}')">❌</button>` : ''}
+      <label>Fecha inicial:</label>
+      <input type="date" name="fechaInicio_${i}" required>
+      <label>Fecha de vencimiento:</label>
+      <input type="date" name="fechaVencimiento_${i}" required>
+      <label>Monto ($):</label>
+      <input type="text" name="monto_${i}" required placeholder="Ej: 1500000">
+      <label>Interés mensual (%):</label>
+      <input type="number" name="interesMensual_${i}" step="0.01" required>
+      <label>Interés de mora mensual (%):</label>
+      <input type="number" name="interesMoraMensual_${i}" step="0.01" required>
+    `;
+    document.getElementById('obligaciones').appendChild(div);
+  }
+
+  // Funciones para mostrar los textos de manifiestos
+  function mostrarTextoPagoAdeudada() {
+    const pagoAdeudada = document.getElementById('pagoAdeudada').value;
+    const texto = document.getElementById('textoPagoAdeudada');
+    if (pagoAdeudada === 'si') {
+      texto.style.display = 'block';
+    } else {
+      texto.style.display = 'none';
+    }
+  }
+
+  function mostrarTextoSoportes() {
+    const soportes = document.getElementById('soportesDocumentales').value;
+    const texto = document.getElementById('textoSoportes');
+    if (soportes === 'si') {
+      texto.style.display = 'block';
+    } else {
+      texto.style.display = 'none';
+    }
+  }
+
+  document.getElementById('miFormulario').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    calcularIntereses(formData);
+
+    const data = {};
+    for (let [key, value] of formData.entries()) {
+      data[key] = value;
+    }
+
+    try {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbzZ_qE0xcv6Mw_73VT7zA6V6qnuxPnA420IVb0ANTt8cuIUoU6WyeJ9roZvLUpt-oyR/exec', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const result = await response.json();
+      const respuesta = document.getElementById('respuesta');
+      respuesta.innerText = result.message || "Formulario enviado correctamente.";
+
+      if (result.pdfUrl) {
+        const link = document.createElement('a');
+        link.href = result.pdfUrl;
+        link.innerText = "Ver PDF";
+        link.target = "_blank";
+        respuesta.appendChild(document.createElement("br"));
+        respuesta.appendChild(link);
       }
-    });
-  </script>
+
+    } catch (err) {
+      console.error("Error al enviar:", err);
+      document.getElementById('respuesta').innerText = "Error al enviar el formulario.";
+    }
+  });
+
+  // Cargar los valores por defecto
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('demandantes').innerHTML = crearCampos('demandante', 1);
+    document.getElementById('demandados').innerHTML = crearCampos('demandado', 1);
+    document.getElementById('apoderados').innerHTML = crearCampos('apoderado', 1);
+    agregarObligacion(); // uno por defecto
+    mostrarTextoPagoAdeudada(); // Mostrar texto según selección
+    mostrarTextoSoportes(); // Mostrar texto según selección
+  });
+</script>
+
 </body>
 </html>
