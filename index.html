@@ -1,15 +1,3 @@
-Perfecto, aquí tienes el **HTML completo actualizado** con el cálculo automático de intereses mensuales implementado correctamente dentro del formulario.
-
----
-
-### ✅ Cambios clave:
-- Se añadió la función `calcularIntereses(formData)` justo antes de enviar los datos.
-- Esta función calcula el monto final de cada obligación aplicando interés compuesto mensual y lo agrega al `formData`.
-
----
-
-### 🔧 Código completo actualizado:
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -42,6 +30,7 @@ Perfecto, aquí tienes el **HTML completo actualizado** con el cálculo automát
     }
     .obligacion-calculo { margin-top: 15px; }
     .manifiesto-texto, .prueba-texto { margin-top: 10px; font-style: italic; }
+    .interes-calculado { margin-top: 20px; padding: 10px; background-color: #f1f1f1; border: 1px solid #ccc; border-radius: 5px; }
   </style>
 </head>
 <body>
@@ -132,6 +121,12 @@ Perfecto, aquí tienes el **HTML completo actualizado** con el cálculo automát
 
 <div id="respuesta" style="margin-top: 20px;"></div>
 
+<!-- Área para mostrar los intereses calculados -->
+<div id="interesesCalculados" class="interes-calculado" style="display:none;">
+  <h3>Resumen de Obligaciones y Cálculo de Intereses</h3>
+  <ul id="listaIntereses"></ul>
+</div>
+
 <script>
   let contador = {
     demandante: 1,
@@ -213,6 +208,9 @@ Perfecto, aquí tienes el **HTML completo actualizado** con el cálculo automát
   }
 
   function calcularIntereses(formData) {
+    const listaIntereses = document.getElementById('listaIntereses');
+    listaIntereses.innerHTML = ''; // Limpiar la lista anterior
+
     for (let i = 1; i < contador.obligacion; i++) {
       const monto = parseFloat(formData.get(`monto_${i}`));
       const interes = parseFloat(formData.get(`interesMensual_${i}`)) / 100;
@@ -223,7 +221,13 @@ Perfecto, aquí tienes el **HTML completo actualizado** con el cálculo automát
       const meses = Math.max(0, (fechaFin.getFullYear() - fechaInicio.getFullYear()) * 12 + (fechaFin.getMonth() - fechaInicio.getMonth()));
       const montoFinal = monto * Math.pow(1 + interes, meses);
       formData.append(`obligacion_${i}_montoFinal`, montoFinal.toFixed(2));
+
+      const item = document.createElement('li');
+      item.textContent = `Obligación ${i}: Monto Inicial: $${monto}, Interés mensual: ${interes * 100}%, Fecha de Vencimiento: ${fechaFin.toLocaleDateString()}, Monto Final: $${montoFinal.toFixed(2)}`;
+      listaIntereses.appendChild(item);
     }
+
+    document.getElementById('interesesCalculados').style.display = 'block';
   }
 
   document.getElementById('miFormulario').addEventListener('submit', async function(e) {
