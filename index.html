@@ -1,270 +1,528 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Formulario de Proceso</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; max-width: 900px; margin: auto; }
-        fieldset { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 8px; }
-        legend { font-weight: bold; padding: 0 10px; }
-        label { display: block; margin-top: 10px; font-weight: bold; }
-        input, select, textarea { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; }
-        .remove-button {
-            background-color: #ff4d4d;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            margin-top: 10px;
-            cursor: pointer;
-            border-radius: 5px;
-            float: right;
-        }
-        .add-button {
-            margin-top: 10px;
-            background-color: #2e86de;
-            color: white;
-            padding: 8px 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .obligacion-calculo { margin-top: 15px; }
-        .manifiesto-texto, .prueba-texto { margin-top: 10px; font-style: italic; }
-        .interes-calculado { margin-top: 20px; padding: 10px; background-color: #f1f1f1; border: 1px solid #ccc; border-radius: 5px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario Jurídico</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    
+    body {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+    
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 30px;
+    }
+    
+    form {
+      background-color: white;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    fieldset {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      background-color: #fcfcfc;
+    }
+    
+    legend {
+      font-weight: bold;
+      padding: 0 10px;
+      color: #2c3e50;
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+    }
+    
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+    
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    
+    textarea {
+      resize: vertical;
+    }
+    
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 16px;
+      margin-top: 10px;
+      transition: background-color 0.3s;
+    }
+    
+    button:hover {
+      background-color: #2980b9;
+    }
+    
+    .add-button {
+      background-color: #2ecc71;
+      width: auto;
+    }
+    
+    .add-button:hover {
+      background-color: #27ae60;
+    }
+    
+    .remove-button {
+      background-color: #e74c3c;
+      width: auto;
+      margin-left: 10px;
+    }
+    
+    .remove-button:hover {
+      background-color: #c0392b;
+    }
+    
+    .seccion {
+      background-color: #f5f5f5;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #eee;
+      position: relative;
+    }
+    
+    .seccion h3 {
+      margin-top: 0;
+      color: #2c3e50;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 8px;
+    }
+    
+    .obligacion {
+      background-color: #f0f7ff;
+    }
+    
+    .manifiesto-texto {
+      background-color: #fff8e1;
+      padding: 10px;
+      border-left: 4px solid #ffc107;
+      margin: 10px 0 15px;
+      display: none;
+    }
+    
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0 -10px;
+    }
+    
+    .col {
+      flex: 1;
+      padding: 0 10px;
+      min-width: 200px;
+    }
+    
+    .required-field::after {
+      content: " *";
+      color: red;
+    }
+    
+    .error-message {
+      color: #e74c3c;
+      font-size: 14px;
+      margin-top: -5px;
+      margin-bottom: 10px;
+      display: none;
+    }
+    
+    @media (max-width: 768px) {
+      .col {
+        flex: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
+  <h1>Formulario Jurídico</h1>
 
-    <h2>Formulario de Proceso</h2>
-    <form id="miFormulario">
+  <form action="https://script.google.com/macros/s/AKfycby1CZICqxqgRm2x99N12IZEUGPg4F4Do3j9I1LNu1A0YcTNv80OTqgMXJEexCpoFIs/exec" method="POST" id="miFormulario">
+    <!-- Demandante -->
+    <fieldset>
+      <legend>Demandante</legend>
+      <div id="demandantes"></div>
+      <button type="button" class="add-button" onclick="agregarSeccion('demandantes', 'demandante')">+ Agregar Demandante</button>
+    </fieldset>
 
-        <fieldset>
-            <legend>Demandante</legend>
-            <div id="demandantes"></div>
-            <button type="button" class="add-button" onclick="agregarSeccion('demandantes', 'demandante')">+ Agregar Demandante</button>
-        </fieldset>
+    <!-- Demandado -->
+    <fieldset>
+      <legend>Demandado</legend>
+      <div id="demandados"></div>
+      <button type="button" class="add-button" onclick="agregarSeccion('demandados', 'demandado')">+ Agregar Demandado</button>
+    </fieldset>
 
-        <fieldset>
-            <legend>Demandado</legend>
-            <div id="demandados"></div>
-            <button type="button" class="add-button" onclick="agregarSeccion('demandados', 'demandado')">+ Agregar Demandado</button>
-        </fieldset>
+    <!-- Apoderado -->
+    <fieldset>
+      <legend>Apoderado</legend>
+      <div id="apoderados"></div>
+      <button type="button" class="add-button" onclick="agregarSeccion('apoderados', 'apoderado')">+ Agregar Apoderado</button>
+    </fieldset>
 
-        <fieldset>
-            <legend>Apoderado</legend>
-            <div id="apoderados"></div>
-            <button type="button" class="add-button" onclick="agregarSeccion('apoderados', 'apoderado')">+ Agregar Apoderado</button>
-        </fieldset>
+    <!-- Hechos -->
+    <fieldset>
+      <legend>Hechos</legend>
+      <label for="tipoHecho" class="required-field">Tipo de Hecho:</label>
+      <select id="tipoHecho" name="tipoHecho" required>
+        <option value="">Seleccione...</option>
+        <option value="verbal">Verbal</option>
+        <option value="escrito">Escrito</option>
+      </select>
+      <div class="error-message" id="tipoHecho-error">Este campo es obligatorio</div>
 
-        <fieldset>
-            <legend>Hechos</legend>
-            <label for="tipoHecho">Tipo de Hecho:</label>
-            <select id="tipoHecho" name="tipoHecho" required>
-                <option value="">Seleccione...</option>
-                <option value="verbal">Verbal</option>
-                <option value="escrito">Escrito</option>
+      <label for="descripcionHecho" class="required-field">Precise en forma breve y concreta cuál fue el contrato que originó la deuda - (máximo 2000 caracteres)</label>
+      <textarea id="descripcionHecho" name="descripcionHecho" rows="5" maxlength="2000" required></textarea>
+      <div class="error-message" id="descripcionHecho-error">Este campo es obligatorio</div>
+      <div style="text-align: right; font-size: 12px;">
+        <span id="charCount">0</span>/2000 caracteres
+      </div>
+    </fieldset>
+
+    <!-- Obligaciones -->
+    <fieldset>
+      <legend>Obligaciones</legend>
+      <div id="obligaciones"></div>
+      <button type="button" class="add-button" onclick="agregarObligacion()">+ Agregar Obligación</button>
+    </fieldset>
+
+    <!-- Manifiestos -->
+    <fieldset>
+      <legend>Manifiestos</legend>
+      <label for="pagoAdeudada" class="required-field">Pago suma adeudada:</label>
+      <select id="pagoAdeudada" name="pagoAdeudada" onchange="mostrarTextoPagoAdeudada()" required>
+        <option value="">Seleccione...</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select>
+      <div class="error-message" id="pagoAdeudada-error">Este campo es obligatorio</div>
+
+      <div id="textoPagoAdeudada" class="manifiesto-texto">
+        <p>En caso de que el cumplimiento dependa de una contraprestación a su cargo, acredite cómo la cumplió (aporte pruebas en el numeral 6).</p>
+      </div>
+
+      <label for="soportesDocumentales" class="required-field">Soportes documentales:</label>
+      <select id="soportesDocumentales" name="soportesDocumentales" onchange="mostrarTextoSoportes()" required>
+        <option value="">Seleccione...</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select>
+      <div class="error-message" id="soportesDocumentales-error">Este campo es obligatorio</div>
+
+      <div id="textoSoportes" class="manifiesto-texto">
+        <p>En caso de tenerlas en su poder, relacionarlas y aportarlas como pruebas en el numeral 6 o señalar en dónde están.</p>
+      </div>
+    </fieldset>
+
+    <!-- Pruebas -->
+    <fieldset>
+      <legend>Pruebas</legend>
+      <label for="documentosPruebas">Adjunte y precise en forma concreta cuál (es) es (son) el (los) documento (s) o prueba (s) que evidencia (n) el cumplimiento de la contraprestación; de la existencia de la (s) deuda (s):</label>
+      <input type="file" id="documentosPruebas" name="documentosPruebas" accept="image/*,application/pdf,.doc,.docx" multiple>
+
+      <label for="ubicacionPruebas">O señale (n) en dónde está (n) la (s) prueba (s) - (máximo 2000 caracteres):</label>
+      <textarea id="ubicacionPruebas" name="ubicacionPruebas" rows="5" maxlength="2000"></textarea>
+      <div style="text-align: right; font-size: 12px;">
+        <span id="charCountUbicacion">0</span>/2000 caracteres
+      </div>
+    </fieldset>
+
+    <button type="submit">Enviar</button>
+  </form>
+
+  <script>
+    // Contadores de secciones
+    let contadorDemandante = 0;
+    let contadorDemandado = 0;
+    let contadorApoderado = 0;
+    let contadorObligacion = 0;
+    
+    // Función para agregar secciones principales (demandante, demandado, apoderado)
+    function agregarSeccion(contenedorId, tipo) {
+      let contador;
+      let titulo;
+      
+      // Determinar el contador y título según el tipo
+      if (tipo === 'demandante') {
+        contador = ++contadorDemandante;
+        titulo = 'Demandante';
+      } else if (tipo === 'demandado') {
+        contador = ++contadorDemandado;
+        titulo = 'Demandado';
+      } else if (tipo === 'apoderado') {
+        contador = ++contadorApoderado;
+        titulo = 'Apoderado';
+      }
+      
+      const contenedor = document.getElementById(contenedorId);
+      
+      // Crear sección
+      const seccion = document.createElement('div');
+      seccion.classList.add('seccion');
+      seccion.setAttribute('id', `${tipo}-${contador}`);
+      
+      // HTML para la sección
+      seccion.innerHTML = `
+        <h3>${titulo} #${contador}</h3>
+        <div class="row">
+          <div class="col">
+            <label for="${tipo}Tipo${contador}" class="required-field">Tipo:</label>
+            <select id="${tipo}Tipo${contador}" name="${tipo}Tipo${contador}" required>
+              <option value="">Seleccione...</option>
+              <option value="persona_natural">Persona Natural</option>
+              <option value="persona_juridica">Persona Jurídica</option>
             </select>
-
-            <label for="descripcionHecho">Precise en forma breve y concreta cuál fue el contrato que originó la deuda - (máximo 2000 caracteres)</label>
-            <textarea id="descripcionHecho" name="descripcionHecho" rows="5" maxlength="2000" required></textarea>
-        </fieldset>
-
-        <fieldset>
-            <legend>Obligaciones</legend>
-            <div id="obligaciones"></div>
-            <button type="button" class="add-button" onclick="agregarObligacion()">+ Agregar Obligación</button>
-        </fieldset>
-
-        <fieldset>
-            <legend>Manifiestos</legend>
-            <label for="pagoAdeudada">Pago suma adeudada:</label>
-            <select id="pagoAdeudada" name="pagoAdeudada" onchange="mostrarTextoPagoAdeudada()" required>
-                <option value="">Seleccione...</option>
-                <option value="si">Sí</option>
-                <option value="no">No</option>
+            <div class="error-message" id="${tipo}Tipo${contador}-error">Este campo es obligatorio</div>
+          </div>
+          
+          <div class="col">
+            <label for="${tipo}TipoId${contador}" class="required-field">Tipo de Identificación:</label>
+            <select id="${tipo}TipoId${contador}" name="${tipo}TipoId${contador}" required>
+              <option value="">Seleccione...</option>
+              <option value="cc">Cédula de Ciudadanía</option>
+              <option value="ce">Cédula de Extranjería</option>
+              <option value="nit">NIT</option>
+              <option value="pasaporte">Pasaporte</option>
             </select>
-
-            <div id="textoPagoAdeudada" class="manifiesto-texto" style="display:none;">
-                <p>En caso de que el cumplimiento dependa de una contraprestación a su cargo, acredite cómo la cumplió (aporte pruebas en el numeral 6).</p>
-            </div>
-
-            <label for="soportesDocumentales">Soportes documentales:</label>
-            <select id="soportesDocumentales" name="soportesDocumentales" onchange="mostrarTextoSoportes()" required>
-                <option value="">Seleccione...</option>
-                <option value="si">Sí</option>
-                <option value="no">No</option>
-            </select>
-
-            <div id="textoSoportes" class="manifiesto-texto" style="display:none;">
-                <p>En caso de tenerlas en su poder, relacionarlas y aportarlas como pruebas en el numeral 6 o señalar en dónde están.</p>
-            </div>
-        </fieldset>
-
-        <fieldset>
-            <legend>Pruebas</legend>
-            <label for="documentosPruebas">Adjunte y precise en forma concreta cuál (es) es (son) el (los) documento (s) o prueba (s) que evidencia (n) el cumplimiento de la contraprestación; de la existencia de la (s) deuda (s):</label>
-            <input type="file" id="documentosPruebas" name="documentosPruebas" accept="image/*,application/pdf,.doc,.docx" multiple>
-
-            <label for="ubicacionPruebas">O señale (n) en dónde está (n) la (s) prueba (s) - (máximo 2000 caracteres):</label>
-            <textarea id="ubicacionPruebas" name="ubicacionPruebas" rows="5" maxlength="2000"></textarea>
-        </fieldset>
-
-        <button type="submit">Enviar</button>
-    </form>
-
-    <div id="respuesta" style="margin-top: 20px;"></div>
-
-    <div id="interesesCalculados" class="interes-calculado" style="display:none;">
-        <h3>Resumen de Obligaciones y Cálculo de Intereses</h3>
-        <ul id="listaIntereses"></ul>
-    </div>
-
-    <script>
-        let contador = {
-            demandante: 1,
-            demandado: 1,
-            apoderado: 1,
-            obligacion: 1
-        };
-
-        function crearCampos(tipo, index) {
-            return `
-                <div class="${tipo}-grupo" id="${tipo}-${index}">
-                    ${index > 1 ? `<button type="button" class="remove-button" onclick="eliminarSeccion('${tipo}-${index}')">❌</button>` : ''}
-                    <label>Nombre:</label>
-                    <input type="text" name="${tipo}_nombre_${index}" required>
-                    <label>Ciudad de domicilio:</label>
-                    <input type="text" name="${tipo}_ciudad_${index}" required>
-                    <label>Tipo de documento:</label>
-                    <select name="${tipo}_documento_${index}" required>
-                        <option value="CC">CC</option>
-                        <option value="NIT">NIT</option>
-                        <option value="TI">TI</option>
-                        <option value="CE">CE</option>
-                        <option value="Pasaporte">Pasaporte</option>
-                    </select>
-                    <label>Número:</label>
-                    <input type="number" name="${tipo}_numero_${index}" required>
-                    <label>Dirección notificaciones:</label>
-                    <input type="text" name="${tipo}_direccion_${index}" required>
-                    <label>Ciudad de domicilio:</label>
-                    <input type="text" name="${tipo}_ciudad2_${index}" required>
-                    <label>Celular:</label>
-                    <input type="number" name="${tipo}_celular_${index}" required>
-                    <label>Correo Electrónico:</label>
-                    <input type="email" name="${tipo}_correo_${index}" required>
-                </div>
-            `;
+            <div class="error-message" id="${tipo}TipoId${contador}-error">Este campo es obligatorio</div>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col">
+            <label for="${tipo}NumId${contador}" class="required-field">Número de Identificación:</label>
+            <input type="text" id="${tipo}NumId${contador}" name="${tipo}NumId${contador}" required>
+            <div class="error-message" id="${tipo}NumId${contador}-error">Este campo es obligatorio</div>
+          </div>
+          
+          <div class="col">
+            <label for="${tipo}Nombre${contador}" class="required-field">Nombre o Razón Social:</label>
+            <input type="text" id="${tipo}Nombre${contador}" name="${tipo}Nombre${contador}" required>
+            <div class="error-message" id="${tipo}Nombre${contador}-error">Este campo es obligatorio</div>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col">
+            <label for="${tipo}Direccion${contador}" class="required-field">Dirección:</label>
+            <input type="text" id="${tipo}Direccion${contador}" name="${tipo}Direccion${contador}" required>
+            <div class="error-message" id="${tipo}Direccion${contador}-error">Este campo es obligatorio</div>
+          </div>
+          
+          <div class="col">
+            <label for="${tipo}Ciudad${contador}" class="required-field">Ciudad:</label>
+            <input type="text" id="${tipo}Ciudad${contador}" name="${tipo}Ciudad${contador}" required>
+            <div class="error-message" id="${tipo}Ciudad${contador}-error">Este campo es obligatorio</div>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col">
+            <label for="${tipo}Email${contador}">Correo Electrónico:</label>
+            <input type="email" id="${tipo}Email${contador}" name="${tipo}Email${contador}">
+          </div>
+          
+          <div class="col">
+            <label for="${tipo}Telefono${contador}">Teléfono:</label>
+            <input type="tel" id="${tipo}Telefono${contador}" name="${tipo}Telefono${contador}">
+          </div>
+        </div>
+        
+        <button type="button" class="remove-button" onclick="eliminarSeccion('${tipo}-${contador}')">Eliminar ${titulo}</button>
+      `;
+      
+      contenedor.appendChild(seccion);
+    }
+    
+    // Función para agregar obligaciones
+    function agregarObligacion() {
+      const contador = ++contadorObligacion;
+      const contenedor = document.getElementById('obligaciones');
+      
+      const seccion = document.createElement('div');
+      seccion.classList.add('seccion', 'obligacion');
+      seccion.setAttribute('id', `obligacion-${contador}`);
+      
+      seccion.innerHTML = `
+        <h3>Obligación #${contador}</h3>
+        <label for="obligacionConcepto${contador}" class="required-field">Concepto de la obligación:</label>
+        <input type="text" id="obligacionConcepto${contador}" name="obligacionConcepto${contador}" placeholder="Ej. Préstamo, Servicio, etc." required>
+        <div class="error-message" id="obligacionConcepto${contador}-error">Este campo es obligatorio</div>
+        
+        <div class="row">
+          <div class="col">
+            <label for="obligacionValor${contador}" class="required-field">Valor de la obligación:</label>
+            <input type="number" id="obligacionValor${contador}" name="obligacionValor${contador}" placeholder="Monto en pesos" required>
+            <div class="error-message" id="obligacionValor${contador}-error">Este campo es obligatorio</div>
+          </div>
+          
+          <div class="col">
+            <label for="obligacionFecha${contador}" class="required-field">Fecha de vencimiento:</label>
+            <input type="date" id="obligacionFecha${contador}" name="obligacionFecha${contador}" required>
+            <div class="error-message" id="obligacionFecha${contador}-error">Este campo es obligatorio</div>
+          </div>
+        </div>
+        
+        <label for="obligacionDetalle${contador}">Detalle de la obligación:</label>
+        <textarea id="obligacionDetalle${contador}" name="obligacionDetalle${contador}" rows="3" maxlength="1000" placeholder="Describa brevemente la obligación..."></textarea>
+        <div style="text-align: right; font-size: 12px;">
+          <span id="charCountObligacion${contador}">0</span>/1000 caracteres
+        </div>
+        
+        <button type="button" class="remove-button" onclick="eliminarSeccion('obligacion-${contador}')">Eliminar Obligación</button>
+      `;
+      
+      contenedor.appendChild(seccion);
+      
+      // Configurar el contador de caracteres para el detalle de la obligación
+      const textarea = document.getElementById(`obligacionDetalle${contador}`);
+      const charCounter = document.getElementById(`charCountObligacion${contador}`);
+      
+      textarea.addEventListener('input', function() {
+        charCounter.textContent = this.value.length;
+      });
+    }
+    
+    // Función para eliminar secciones
+    function eliminarSeccion(id) {
+      if (confirm('¿Está seguro de que desea eliminar esta sección?')) {
+        const seccion = document.getElementById(id);
+        seccion.parentNode.removeChild(seccion);
+      }
+    }
+    
+    // Mostrar/ocultar texto de pago adeudada
+    function mostrarTextoPagoAdeudada() {
+      const select = document.getElementById('pagoAdeudada');
+      const texto = document.getElementById('textoPagoAdeudada');
+      
+      if (select.value === 'si') {
+        texto.style.display = 'block';
+      } else {
+        texto.style.display = 'none';
+      }
+    }
+    
+    // Mostrar/ocultar texto de soportes documentales
+    function mostrarTextoSoportes() {
+      const select = document.getElementById('soportesDocumentales');
+      const texto = document.getElementById('textoSoportes');
+      
+      if (select.value === 'si') {
+        texto.style.display = 'block';
+      } else {
+        texto.style.display = 'none';
+      }
+    }
+    
+    // Configurar contadores de caracteres
+    document.addEventListener('DOMContentLoaded', function() {
+      // Para descripción de hechos
+      const descHecho = document.getElementById('descripcionHecho');
+      const charCount = document.getElementById('charCount');
+      
+      descHecho.addEventListener('input', function() {
+        charCount.textContent = this.value.length;
+      });
+      
+      // Para ubicación de pruebas
+      const ubicacionPruebas = document.getElementById('ubicacionPruebas');
+      const charCountUbicacion = document.getElementById('charCountUbicacion');
+      
+      ubicacionPruebas.addEventListener('input', function() {
+        charCountUbicacion.textContent = this.value.length;
+      });
+      
+      // Agregar al menos un demandante y un demandado al cargar la página
+      agregarSeccion('demandantes', 'demandante');
+      agregarSeccion('demandados', 'demandado');
+    });
+    
+    // Validación del formulario
+    document.getElementById('miFormulario').addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      // Reiniciar todos los mensajes de error
+      const errorMessages = document.querySelectorAll('.error-message');
+      errorMessages.forEach(msg => {
+        msg.style.display = 'none';
+      });
+      
+      let formValido = true;
+      
+      // Validar campos obligatorios
+      const camposObligatorios = document.querySelectorAll('[required]');
+      camposObligatorios.forEach(campo => {
+        if (!campo.value.trim()) {
+          const errorMsg = document.getElementById(`${campo.id}-error`);
+          if (errorMsg) {
+            errorMsg.style.display = 'block';
+            formValido = false;
+          }
         }
-
-        function agregarSeccion(contenedorId, tipo) {
-            contador[tipo]++;
-            const contenedor = document.getElementById(contenedorId);
-            contenedor.insertAdjacentHTML('beforeend', crearCampos(tipo, contador[tipo]));
+      });
+      
+      // Verificar si hay al menos un demandante y un demandado
+      if (document.querySelectorAll('[id^="demandante-"]').length === 0) {
+        alert('Debe agregar al menos un demandante');
+        formValido = false;
+      }
+      
+      if (document.querySelectorAll('[id^="demandado-"]').length === 0) {
+        alert('Debe agregar al menos un demandado');
+        formValido = false;
+      }
+      
+      // Verificar si hay al menos una obligación
+      if (document.querySelectorAll('[id^="obligacion-"]').length === 0) {
+        alert('Debe agregar al menos una obligación');
+        formValido = false;
+      }
+      
+      if (formValido) {
+        // Si todo está correcto, preparar datos y enviar
+        const formData = new FormData(this);
+        
+        // Aquí puedes agregar el código para enviar el formulario
+        // Por ahora, solo mostraremos un mensaje de éxito
+        alert('Formulario enviado correctamente!');
+        
+        // Descomenta la siguiente línea si quieres que el formulario se reinicie después de enviarse
+        // this.reset();
+      } else {
+        // Desplazarse al primer error
+        const primerError = document.querySelector('.error-message[style="display: block;"]');
+        if (primerError) {
+          primerError.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-
-        function eliminarSeccion(id) {
-            const elemento = document.getElementById(id);
-            if (elemento) elemento.remove();
-        }
-
-        function agregarObligacion() {
-            const i = contador.obligacion++;
-            const div = document.createElement('div');
-            div.className = "obligacion-calculo";
-            div.id = `obligacion-${i}`;
-            div.innerHTML = `
-                ${i > 1 ? `<button type="button" class="remove-button" onclick="eliminarSeccion('obligacion-${i}')">❌</button>` : ''}
-                <label>Fecha inicial:</label>
-                <input type="date" name="fechaInicio_${i}" required>
-                <label>Fecha de vencimiento:</label>
-                <input type="date" name="fechaVencimiento_${i}" required>
-                <label>Monto ($):</label>
-                <input type="text" name="monto_${i}" required placeholder="Ej: 1500000">
-                <label>Interés mensual (%):</label>
-                <input type="number" name="interesMensual_${i}" step="0.01" required>
-                <label>Interés de mora mensual (%):</label>
-                <input type="number" name="interesMoraMensual_${i}" step="0.01" required>
-            `;
-            document.getElementById('obligaciones').appendChild(div);
-        }
-
-        function mostrarTextoPagoAdeudada() {
-            const valor = document.getElementById('pagoAdeudada').value;
-            document.getElementById('textoPagoAdeudada').style.display = valor === 'si' ? 'block' : 'none';
-        }
-
-        function mostrarTextoSoportes() {
-            const valor = document.getElementById('soportesDocumentales').value;
-            document.getElementById('textoSoportes').style.display = valor === 'si' ? 'block' : 'none';
-        }
-
-        function calcularIntereses(formData) {
-            const listaIntereses = document.getElementById('listaIntereses');
-            listaIntereses.innerHTML = ''; // Limpiar la lista anterior
-
-            for (let i = 1; i < contador.obligacion; i++) {
-                const monto = parseFloat(formData.get(`monto_${i}`));
-                const interes = parseFloat(formData.get(`interesMensual_${i}`)) / 100;
-                const fechaInicio = new Date(formData.get(`fechaInicio_${i}`));
-                const fechaFin = new Date(formData.get(`fechaVencimiento_${i}`));
-                if (!monto || !interes || isNaN(fechaInicio) || isNaN(fechaFin)) continue;
-
-                const meses = Math.max(0, (fechaFin.getFullYear() - fechaInicio.getFullYear()) * 12 + (fechaFin.getMonth() - fechaInicio.getMonth()));
-                const montoFinal = monto * Math.pow(1 + interes, meses);
-                formData.append(`obligacion_${i}_montoFinal`, montoFinal.toFixed(2));
-
-                const item = document.createElement('li');
-                item.textContent = `Obligación ${i}: Monto Inicial: $${monto}, Interés mensual: ${interes * 100}%, Fecha de Vencimiento: ${fechaFin.toLocaleDateString()}, Monto Final: $${montoFinal.toFixed(2)}`;
-                listaIntereses.appendChild(item);
-            }
-
-            document.getElementById('interesesCalculados').style.display = 'block';
-        }
-
-        document.getElementById('miFormulario').addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            const formData = new FormData(this);
-            calcularIntereses(formData);
-
-            const data = {};
-            for (let [key, value] of formData.entries()) {
-                data[key] = value;
-            }
-
-            try {
-                const response = await fetch('https://script.google.com/macros/s/AKfycbzZMe0hcInU2mnZSZL2D0On5M3vZjm9UfCjU9sz8-phrJ6GUms7atcUQOaDC_4FqFlZ/exec', { // Reemplaza con la URL de tu App Script
-                    method: 'POST',
-                    body: JSON.stringify(data),
-                    headers: { 'Content-Type': 'application/json' }
-                });
-
-                const result = await response.json();
-                const respuesta = document.getElementById('respuesta');
-                respuesta.innerText = result.message || "Formulario enviado correctamente.";
-
-                if (result.pdfUrl) {
-                    const link = document.createElement('a');
-                    link.href = result.pdfUrl;
-                    link.innerText = "Ver PDF";
-                    link.target = "_blank";
-                    respuesta.appendChild(document.createElement("br"));
-                    respuesta.appendChild(link);
-                }
-
-            } catch (err) {
-                console.error("Error al enviar:", err);
-                document.getElementById('respuesta').innerText = "Error al enviar el formulario.";
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('demandantes').innerHTML = crearCampos('demandante', 1);
-            document.getElementById('demandados').innerHTML = crearCampos('demandado', 1);
-            document.getElementById('apoderados').innerHTML = crearCampos('apoderado', 1);
-        });
-    </script>
-
+      }
+    });
+  </script>
 </body>
 </html>
